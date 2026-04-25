@@ -3,11 +3,34 @@ import json
 
 from .calculators import calculate_valuation
 from .pipeline import run_company_analysis
-from .reporting import generate_markdown_report
+from .reporting import generate_markdown_report, generate_markdown_report_from_payload
+
+
+def _payload_from_args(args: argparse.Namespace) -> dict:
+    fields = {
+        "ticker": args.ticker,
+        "company_name": args.company_name,
+        "exchange": args.exchange,
+        "currency": args.currency,
+        "financial_currency": args.financial_currency,
+        "shares_outstanding": args.shares_outstanding,
+        "share_price": args.share_price,
+        "market_cap": args.market_cap,
+        "revenue": args.revenue,
+        "net_profit": args.net_profit,
+        "adjusted_net_profit": args.adjusted_net_profit,
+        "target_market_cap": args.target_market_cap,
+        "period": args.period,
+        "unit": args.unit,
+    }
+    return {key: value for key, value in fields.items() if value is not None}
 
 
 def cmd_generate_report(args: argparse.Namespace) -> None:
-    path = generate_markdown_report(args.company, args.target_market_cap)
+    if args.company:
+        path = generate_markdown_report(args.company, args.target_market_cap)
+    else:
+        path = generate_markdown_report_from_payload(_payload_from_args(args))
     print(json.dumps({"status": "ok", "report_path": str(path)}, ensure_ascii=False, indent=2))
 
 
@@ -39,12 +62,25 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(required=True)
 
     report = sub.add_parser("generate-report")
-    report.add_argument("--company", default="asiasoft_1675_hk")
+    report.add_argument("--company", default=None, help="Configured seed company_id. Optional when explicit company metrics are provided.")
+    report.add_argument("--ticker", default=None)
+    report.add_argument("--company-name", default=None)
+    report.add_argument("--exchange", default="")
+    report.add_argument("--currency", default="HKD")
+    report.add_argument("--financial-currency", default=None)
+    report.add_argument("--shares-outstanding", type=float, default=None)
+    report.add_argument("--share-price", type=float, default=None)
+    report.add_argument("--market-cap", type=float, default=None)
+    report.add_argument("--revenue", type=float, default=None)
+    report.add_argument("--net-profit", type=float, default=None)
+    report.add_argument("--adjusted-net-profit", type=float, default=None)
+    report.add_argument("--period", default="user_input")
+    report.add_argument("--unit", default="yuan")
     report.add_argument("--target-market-cap", type=float, default=None)
     report.set_defaults(func=cmd_generate_report)
 
     analyze = sub.add_parser("analyze")
-    analyze.add_argument("--company", default="asiasoft_1675_hk")
+    analyze.add_argument("--company", required=True)
     analyze.add_argument("--target-market-cap", type=float, default=None)
     analyze.set_defaults(func=cmd_analyze)
 

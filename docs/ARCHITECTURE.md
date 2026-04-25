@@ -21,4 +21,4 @@ flowchart TD
 
 ## 1.0 边界
 
-1.0 不抓实时数据，全部使用 `data/seed/asiasoft_1675_hk.json`。这样可以先验证 Agent + Skills 的业务闭环。
+1.0 不抓实时数据，支持用户显式输入任意上市公司的 ticker、股本、收入、利润、目标市值等参数；`data/seed/sample_listed_company.json` 仅作为本地回归测试示例。

@@ -2,11 +2,11 @@
 
 ## market-data-skill
 
-读取 seed 行情数据，返回股价、市值、总股本、交易日期和来源。
+读取用户输入或 seed 行情数据，返回股价、市值、总股本、交易日期和来源。
 
 ## financial-report-skill
 
-读取 seed 财务数据，返回收入、净利润、经调整净利润等核心指标。
+读取用户输入或 seed 财务数据，返回收入、净利润、经调整净利润等核心指标。
 
 ## financial-normalization-skill
 
@@ -37,4 +37,4 @@
 
 ## research-report-skill
 
-串联核心管线并生成 Markdown 投研报告。
+串联核心管线并生成 Markdown 投研报告。直接传入 ticker、股本、收入、利润和目标市值即可分析任意上市公司。

@@ -9,7 +9,7 @@ license: internal
 ## 输入
 
 ```json
-{"company_id":"asiasoft_1675_hk"}
+{"ticker":"0700.HK","currency":"HKD","revenue":650000000000,"adjusted_net_profit":180000000000}
 ```
 
 ## 输出
@@ -19,5 +19,5 @@ license: internal
 ## 调用
 
 ```bash
-python3 financial_report_skill.py '{"company_id":"asiasoft_1675_hk"}'
+python3 financial_report_skill.py '{"ticker":"0700.HK","currency":"HKD","revenue":650000000000,"adjusted_net_profit":180000000000}'
 ```

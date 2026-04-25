@@ -9,11 +9,11 @@ license: internal
 ## 输入
 
 ```json
-{"company_id":"asiasoft_1675_hk","target_currency":"HKD"}
+{"currency":"HKD","revenue":650000000000,"adjusted_net_profit":180000000000,"target_currency":"HKD"}
 ```
 
 ## 调用
 
 ```bash
-python3 financial_normalization_skill.py '{"company_id":"asiasoft_1675_hk","target_currency":"HKD"}'
+python3 financial_normalization_skill.py '{"currency":"HKD","revenue":650000000000,"adjusted_net_profit":180000000000,"target_currency":"HKD"}'
 ```

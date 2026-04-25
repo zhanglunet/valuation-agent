@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from .paths import REPORTS_DIR
-from .pipeline import run_company_analysis
+from .pipeline import run_company_analysis, run_payload_analysis
 
 
 def money(value: float | None, unit: str = "亿") -> str:
@@ -26,8 +26,13 @@ def multiple(value: float | None) -> str:
     return f"{value:.1f}x"
 
 
-def generate_markdown_report(company_id: str, target_market_cap: float | None = None, output_path: Path | None = None) -> Path:
-    result = run_company_analysis(company_id, target_market_cap)
+def _fmt_price(value: float | None, currency: str) -> str:
+    if value is None:
+        return "缺失"
+    return f"{value:.2f} {currency}/股"
+
+
+def _build_report(result: dict) -> tuple[str, str]:
     company = result["company"]
     market = result["market"]
     normalized = result["normalized_financials"]
@@ -63,20 +68,21 @@ def generate_markdown_report(company_id: str, target_market_cap: float | None = 
     warnings = valuation.warnings + normalized.warnings
     warning_text = "\n".join(f"- {item}" for item in warnings) if warnings else "- 暂无关键计算警告。"
 
+    market_source_label = "seed/用户输入数据"
     content = f"""# {company.company_name}估值分析报告
 
 ## 1. 核心结论
 
 以目标市值 {money(target)} {company.currency} 测算，基于总股本 {market.shares_outstanding / 100_000_000:.2f} 亿股，对应目标股价约 **{valuation.target_share_price:.2f} {company.currency}/股**。
 
-在当前 seed 数据下，目标市值隐含 PE 为 **{multiple(valuation.implied_pe)}**，隐含 PS 为 **{multiple(valuation.implied_ps)}**。相较当前 seed 市值 {money(current_market_cap)} {company.currency}，目标市值对应空间约 **{pct(upside_to_target)}**。
+在当前{market_source_label}下，目标市值隐含 PE 为 **{multiple(valuation.implied_pe)}**，隐含 PS 为 **{multiple(valuation.implied_ps)}**。相较当前市值 {money(current_market_cap)} {company.currency}，目标市值对应空间约 **{pct(upside_to_target)}**。
 
 ## 2. 当前市场表现
 
 - 股票代码：{company.ticker}
 - 上市地：{company.exchange}
 - 行情日期：{market.trade_date}
-- 当前股价：{market.share_price:.2f} {market.currency}/股
+- 当前股价：{_fmt_price(market.share_price, market.currency)}
 - 当前市值：{money(market.market_cap)} {market.currency}
 - 总股本：{market.shares_outstanding / 100_000_000:.2f} 亿股
 - 数据来源：{market.source_url}
@@ -132,10 +138,22 @@ def generate_markdown_report(company_id: str, target_market_cap: float | None = 
 
 ## 11. 免责声明
 
-本报告基于公开信息和 seed 数据生成，仅用于研究分析和系统开发验证，不构成任何投资建议。
+本报告基于公开信息、用户输入或 seed 示例数据生成，仅用于研究分析和系统开发验证，不构成任何投资建议。
 """
+    return company.company_id, content
 
+
+def _write_report(result: dict, output_path: Path | None = None) -> Path:
+    company_id, content = _build_report(result)
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     path = output_path or REPORTS_DIR / f"{company_id}_valuation_report.md"
     path.write_text(content, encoding="utf-8")
     return path
+
+
+def generate_markdown_report(company_id: str, target_market_cap: float | None = None, output_path: Path | None = None) -> Path:
+    return _write_report(run_company_analysis(company_id, target_market_cap), output_path)
+
+
+def generate_markdown_report_from_payload(payload: dict, output_path: Path | None = None) -> Path:
+    return _write_report(run_payload_analysis(payload), output_path)

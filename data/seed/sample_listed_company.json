@@ -1,7 +1,7 @@
 {
-  "company_id": "asiasoft_1675_hk",
+  "company_id": "sample_listed_company",
   "market_snapshot": {
-    "ticker": "1675.HK",
+    "ticker": "0000.HK",
     "trade_date": "2026-04-25",
     "currency": "HKD",
     "share_price": 8.5,

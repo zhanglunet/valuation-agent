@@ -9,5 +9,5 @@ license: internal
 ## 调用
 
 ```bash
-python3 peer_comparison_skill.py '{"company_id":"asiasoft_1675_hk"}'
+python3 peer_comparison_skill.py '{"ticker":"0700.HK","company_name":"腾讯控股"}'
 ```

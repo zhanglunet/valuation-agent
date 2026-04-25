@@ -41,7 +41,7 @@ hermes config set OPENROUTER_API_KEY "your-key"
 然后验证：
 
 ```text
-@Hermes 亚信科技达到 200 亿港币市值，需要什么样的财务表现和估值倍数支撑？
+@Hermes 请用 valuation-agent 分析 0700.HK：公司名腾讯控股，目标市值 4 万亿港币，总股本 95 亿股，当前股价 420 港币，收入 6500 亿港币，经调整净利润 1800 亿港币。
 ```
 
 如果当前 Hermes 部署不支持从 GitHub repo 自动识别多个 Skill 目录，可以在飞书里让 Hermes 执行以下安装动作：
@@ -73,11 +73,20 @@ cp -r /Users/john/dev/估值模型/valuation-agent/skills/* ~/.hermes/skills/
 ```bash
 cd /Users/john/dev/估值模型/valuation-agent
 python3 -m unittest discover -s tests
-python3 -m valuation_agent.cli generate-report --company asiasoft_1675_hk
+python3 -m valuation_agent.cli generate-report \
+  --ticker 0700.HK \
+  --company-name 腾讯控股 \
+  --exchange HKEX \
+  --currency HKD \
+  --target-market-cap 4000000000000 \
+  --shares-outstanding 9500000000 \
+  --share-price 420 \
+  --revenue 650000000000 \
+  --adjusted-net-profit 180000000000
 ```
 
 ## 5. Hermes 验收问题
 
 ```bash
-hermes chat -q "亚信科技达到 200 亿港币市值，需要什么样的财务表现和估值倍数支撑？"
+hermes chat -q "请用 valuation-agent 分析 0700.HK：公司名腾讯控股，目标市值 4 万亿港币，总股本 95 亿股，当前股价 420 港币，收入 6500 亿港币，经调整净利润 1800 亿港币。"
 ```

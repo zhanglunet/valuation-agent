@@ -2,7 +2,7 @@
 
 这是基于 Hermes Agent + Skills 的上市公司投研估值 Agent 第一版实现。
 
-1.0 版本目标是先用离线 seed 数据跑通亚信科技 `1675.HK` 的 200 亿港币市值目标测算闭环，包括：
+1.0 版本目标是先用用户输入或离线 seed 数据跑通任意上市公司的目标市值测算闭环，包括：
 
 - 公司基础信息读取
 - 行情和财务 seed 数据读取
@@ -30,13 +30,22 @@ valuation-agent/
 ```bash
 cd valuation-agent
 python3 -m unittest discover -s tests
-python3 -m valuation_agent.cli generate-report --company asiasoft_1675_hk
+python3 -m valuation_agent.cli generate-report \
+  --ticker 0700.HK \
+  --company-name 腾讯控股 \
+  --exchange HKEX \
+  --currency HKD \
+  --target-market-cap 4000000000000 \
+  --shares-outstanding 9500000000 \
+  --share-price 420 \
+  --revenue 650000000000 \
+  --adjusted-net-profit 180000000000
 ```
 
 报告默认输出到：
 
 ```text
-data/reports/asiasoft_1675_hk_valuation_report.md
+data/reports/0700_hk_valuation_report.md
 ```
 
 ## Hermes Skills 导入
@@ -58,7 +67,7 @@ data/reports/asiasoft_1675_hk_valuation_report.md
 安装后在飞书里验证：
 
 ```text
-@Hermes 亚信科技达到 200 亿港币市值，需要什么样的财务表现和估值倍数支撑？
+@Hermes 请用 valuation-agent 分析 0700.HK：公司名腾讯控股，目标市值 4 万亿港币，总股本 95 亿股，当前股价 420 港币，收入 6500 亿港币，经调整净利润 1800 亿港币。
 ```
 
 ### 通过本地目录导入
@@ -86,11 +95,11 @@ python3 skills/valuation-skill/valuation_skill.py '{"target_market_cap":20000000
 ```
 
 ```bash
-python3 skills/research-report-skill/research_report_skill.py '{"company_id":"asiasoft_1675_hk"}'
+python3 skills/research-report-skill/research_report_skill.py '{"ticker":"0700.HK","company_name":"腾讯控股","exchange":"HKEX","currency":"HKD","target_market_cap":4000000000000,"shares_outstanding":9500000000,"share_price":420,"revenue":650000000000,"adjusted_net_profit":180000000000}'
 ```
 
 ## 版本边界
 
-1.0 使用本地 seed 数据，不自动抓取实时行情。实时公开数据接入放在 1.1。
+1.0 支持任意上市公司的用户输入参数分析，也保留本地 seed 示例；不自动抓取实时行情。实时公开数据接入放在 1.1。
 
 本系统仅用于研究分析辅助，不构成投资建议。

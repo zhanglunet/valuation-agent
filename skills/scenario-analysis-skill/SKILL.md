@@ -9,11 +9,11 @@ license: internal
 ## 输入
 
 ```json
-{"company_id":"asiasoft_1675_hk"}
+{"currency":"HKD","revenue":650000000000,"shares_outstanding":9500000000}
 ```
 
 ## 调用
 
 ```bash
-python3 scenario_analysis_skill.py '{"company_id":"asiasoft_1675_hk"}'
+python3 scenario_analysis_skill.py '{"currency":"HKD","revenue":650000000000,"shares_outstanding":9500000000}'
 ```

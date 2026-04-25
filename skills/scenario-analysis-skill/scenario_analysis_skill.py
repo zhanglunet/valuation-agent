@@ -11,14 +11,22 @@ from valuation_agent.storage import load_assumptions, load_company, load_financi
 
 def main() -> None:
     payload = json.loads(sys.argv[1]) if len(sys.argv) > 1 else {}
-    company_id = payload.get("company_id", "asiasoft_1675_hk")
-    company = load_company(company_id)
-    market = load_market_snapshot(company_id)
-    statement = load_financial_statement(company_id)
     assumptions = load_assumptions()
-    normalized = normalize_financials(statement, company.currency, assumptions["fx_rates"])
+    company_id = payload.get("company_id")
+    if company_id:
+        company = load_company(company_id)
+        market = load_market_snapshot(company_id)
+        statement = load_financial_statement(company_id)
+        currency = company.currency
+        normalized = normalize_financials(statement, currency, assumptions["fx_rates"])
+        base_revenue = normalized.revenue
+        shares_outstanding = market.shares_outstanding
+    else:
+        currency = payload.get("currency", "HKD")
+        base_revenue = payload["revenue"]
+        shares_outstanding = payload["shares_outstanding"]
     scenarios = payload.get("scenarios") or assumptions["scenario_defaults"]
-    result = scenario_analysis(normalized.revenue, market.shares_outstanding, scenarios, company.currency)
+    result = scenario_analysis(base_revenue, shares_outstanding, scenarios, currency)
     print(json.dumps({"status": "ok", "data": result}, ensure_ascii=False, indent=2))
 
 

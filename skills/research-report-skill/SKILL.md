@@ -9,11 +9,11 @@ license: internal
 ## 输入
 
 ```json
-{"company_id":"asiasoft_1675_hk"}
+{"ticker":"0700.HK","company_name":"腾讯控股","exchange":"HKEX","currency":"HKD","target_market_cap":4000000000000,"shares_outstanding":9500000000,"share_price":420,"revenue":650000000000,"adjusted_net_profit":180000000000}
 ```
 
 ## 调用
 
 ```bash
-python3 research_report_skill.py '{"company_id":"asiasoft_1675_hk"}'
+python3 research_report_skill.py '{"ticker":"0700.HK","company_name":"腾讯控股","exchange":"HKEX","currency":"HKD","target_market_cap":4000000000000,"shares_outstanding":9500000000,"share_price":420,"revenue":650000000000,"adjusted_net_profit":180000000000}'
 ```

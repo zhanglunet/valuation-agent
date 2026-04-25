@@ -1,9 +1,9 @@
 {
   "companies": {
-    "asiasoft_1675_hk": {
-      "company_id": "asiasoft_1675_hk",
-      "company_name": "亚信科技",
-      "ticker": "1675.HK",
+    "sample_listed_company": {
+      "company_id": "sample_listed_company",
+      "company_name": "示例上市公司",
+      "ticker": "0000.HK",
       "exchange": "HKEX",
       "currency": "HKD",
       "reporting_currency": "CNY",
