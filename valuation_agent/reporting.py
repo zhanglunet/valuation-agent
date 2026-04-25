@@ -68,7 +68,7 @@ def _build_report(result: dict) -> tuple[str, str]:
     warnings = valuation.warnings + normalized.warnings
     warning_text = "\n".join(f"- {item}" for item in warnings) if warnings else "- 暂无关键计算警告。"
 
-    market_source_label = "seed/用户输入数据"
+    market_source_label = "公开数据 / 用户输入 / seed 示例数据"
     content = f"""# {company.company_name}估值分析报告
 
 ## 1. 核心结论
@@ -120,14 +120,14 @@ def _build_report(result: dict) -> tuple[str, str]:
 ## 8. 关键驱动因素
 
 - 收入增长能否恢复或保持稳定。
-- AI、云服务、BSS/OSS 等业务能否贡献新增收入。
-- 经调整净利率能否改善。
-- 港股软件和企业数字化板块估值能否修复。
+- 核心业务、产品或服务能否贡献新增收入。
+- 经调整净利率或经营效率能否改善。
+- 所在行业估值中枢和市场风险偏好能否改善。
 - 公司现金流和分红、回购等股东回报政策。
 
 ## 9. 主要风险
 
-- 公开数据存在延迟，本报告 1.0 使用 seed 数据。
+- 公开数据存在延迟，需以交易所公告和公司最新披露为准。
 - 若利润低于假设，目标市值所需估值倍数会明显抬升。
 - 若行业估值中枢下移，目标股价区间需下修。
 - 汇率变动会影响人民币财务数据折算后的港币估值。

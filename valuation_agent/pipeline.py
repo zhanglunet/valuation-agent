@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from .calculators import calculate_valuation, normalize_financials, scenario_analysis
+from .public_data import enrich_payload_from_public_data
 from .schemas import CompanyProfile, FinancialStatement, MarketSnapshot
 from .storage import load_assumptions, load_company, load_financial_statement, load_market_snapshot
 
@@ -45,6 +46,7 @@ def run_company_analysis(company_id: str, target_market_cap: float | None = None
 
 def run_payload_analysis(payload: dict) -> dict:
     """Analyze any listed company from explicit user-provided market and financial inputs."""
+    payload = enrich_payload_from_public_data(payload)
     assumptions = load_assumptions()
     ticker = payload["ticker"]
     currency = payload.get("currency", "HKD")
@@ -92,7 +94,9 @@ def run_payload_analysis(payload: dict) -> dict:
         source_url=payload.get("financial_source_url", "user_input"),
     )
 
-    target = payload["target_market_cap"]
+    target = payload.get("target_market_cap") or market.market_cap
+    if target is None:
+        raise ValueError("target_market_cap is required when public market cap is unavailable")
     normalized = normalize_financials(statement, target_currency=currency, fx_rates=assumptions["fx_rates"])
     valuation = calculate_valuation(
         target_market_cap=target,

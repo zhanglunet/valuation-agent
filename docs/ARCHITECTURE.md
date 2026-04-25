@@ -21,4 +21,6 @@ flowchart TD
 
 ## 1.0 边界
 
-1.0 不抓实时数据，支持用户显式输入任意上市公司的 ticker、股本、收入、利润、目标市值等参数；`data/seed/sample_listed_company.json` 仅作为本地回归测试示例。
+1.0 通过 Yahoo Finance 公开接口自动检索任意上市公司的 ticker、行情、市值、股本和财务摘要。用户也可以显式输入 ticker、股本、收入、利润、目标市值等参数覆盖公开数据；`data/seed/sample_listed_company.json` 仅作为本地回归测试示例。
+
+中文简称先通过 `config/company_aliases.json` 解析到公开市场 ticker，再进入公开数据抓取流程；未命中别名表时，回退到 Yahoo Finance 搜索。

@@ -8,6 +8,7 @@ from .reporting import generate_markdown_report, generate_markdown_report_from_p
 
 def _payload_from_args(args: argparse.Namespace) -> dict:
     fields = {
+        "query": args.query,
         "ticker": args.ticker,
         "company_name": args.company_name,
         "exchange": args.exchange,
@@ -23,7 +24,7 @@ def _payload_from_args(args: argparse.Namespace) -> dict:
         "period": args.period,
         "unit": args.unit,
     }
-    return {key: value for key, value in fields.items() if value is not None}
+    return {key: value for key, value in fields.items() if value is not None and value != ""}
 
 
 def cmd_generate_report(args: argparse.Namespace) -> None:
@@ -63,10 +64,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     report = sub.add_parser("generate-report")
     report.add_argument("--company", default=None, help="Configured seed company_id. Optional when explicit company metrics are provided.")
+    report.add_argument("--query", default=None, help="Company name, abbreviation, or ticker to resolve from public data.")
     report.add_argument("--ticker", default=None)
     report.add_argument("--company-name", default=None)
-    report.add_argument("--exchange", default="")
-    report.add_argument("--currency", default="HKD")
+    report.add_argument("--exchange", default=None)
+    report.add_argument("--currency", default=None)
     report.add_argument("--financial-currency", default=None)
     report.add_argument("--shares-outstanding", type=float, default=None)
     report.add_argument("--share-price", type=float, default=None)
@@ -74,8 +76,8 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("--revenue", type=float, default=None)
     report.add_argument("--net-profit", type=float, default=None)
     report.add_argument("--adjusted-net-profit", type=float, default=None)
-    report.add_argument("--period", default="user_input")
-    report.add_argument("--unit", default="yuan")
+    report.add_argument("--period", default=None)
+    report.add_argument("--unit", default=None)
     report.add_argument("--target-market-cap", type=float, default=None)
     report.set_defaults(func=cmd_generate_report)
 

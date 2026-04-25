@@ -2,16 +2,18 @@
 
 这是基于 Hermes Agent + Skills 的上市公司投研估值 Agent 第一版实现。
 
-1.0 版本目标是先用用户输入或离线 seed 数据跑通任意上市公司的目标市值测算闭环，包括：
+1.0 版本目标是用户只提供上市公司名称、简称或股票代码，系统自动从公开信息中查找 ticker、行情、市值、股本和财务摘要，并跑通任意上市公司的估值分析闭环，包括：
 
 - 公司基础信息读取
-- 行情和财务 seed 数据读取
+- 公开行情和财务摘要自动获取
 - 币种和单位标准化
 - 市值倒推股价
 - PE / PS 隐含倍数和所需利润测算
 - 三情景估值分析
 - Markdown 投研报告生成
 - Hermes Skill 包装层
+
+中文简称优先走 `config/company_aliases.json`，未命中时再使用 Yahoo Finance 搜索。别名表可以持续扩充。
 
 ## 目录结构
 
@@ -30,16 +32,7 @@ valuation-agent/
 ```bash
 cd valuation-agent
 python3 -m unittest discover -s tests
-python3 -m valuation_agent.cli generate-report \
-  --ticker 0700.HK \
-  --company-name 腾讯控股 \
-  --exchange HKEX \
-  --currency HKD \
-  --target-market-cap 4000000000000 \
-  --shares-outstanding 9500000000 \
-  --share-price 420 \
-  --revenue 650000000000 \
-  --adjusted-net-profit 180000000000
+python3 -m valuation_agent.cli generate-report --query 腾讯
 ```
 
 报告默认输出到：
@@ -67,7 +60,7 @@ data/reports/0700_hk_valuation_report.md
 安装后在飞书里验证：
 
 ```text
-@Hermes 请用 valuation-agent 分析 0700.HK：公司名腾讯控股，目标市值 4 万亿港币，总股本 95 亿股，当前股价 420 港币，收入 6500 亿港币，经调整净利润 1800 亿港币。
+@Hermes 请用 valuation-agent 分析腾讯控股
 ```
 
 ### 通过本地目录导入
@@ -91,15 +84,15 @@ skills:
 ## Skill 快速调用
 
 ```bash
-python3 skills/valuation-skill/valuation_skill.py '{"target_market_cap":20000000000,"shares_outstanding":950000000,"revenue":8000000000,"net_profit":800000000}'
+python3 skills/valuation-skill/valuation_skill.py '{"company_name":"腾讯"}'
 ```
 
 ```bash
-python3 skills/research-report-skill/research_report_skill.py '{"ticker":"0700.HK","company_name":"腾讯控股","exchange":"HKEX","currency":"HKD","target_market_cap":4000000000000,"shares_outstanding":9500000000,"share_price":420,"revenue":650000000000,"adjusted_net_profit":180000000000}'
+python3 skills/research-report-skill/research_report_skill.py '{"company_name":"腾讯"}'
 ```
 
 ## 版本边界
 
-1.0 支持任意上市公司的用户输入参数分析，也保留本地 seed 示例；不自动抓取实时行情。实时公开数据接入放在 1.1。
+1.0 支持通过 Yahoo Finance 公开接口自动检索上市公司基础行情和财务摘要；用户输入的参数会覆盖公开数据。本地 seed 示例仅用于测试回归。
 
 本系统仅用于研究分析辅助，不构成投资建议。

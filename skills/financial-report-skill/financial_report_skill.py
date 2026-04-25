@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from valuation_agent.storage import load_financial_statement  # noqa: E402
+from valuation_agent.public_data import enrich_payload_from_public_data  # noqa: E402
 
 
 def main() -> None:
@@ -14,6 +15,7 @@ def main() -> None:
     if company_id:
         data = load_financial_statement(company_id).__dict__
     else:
+        payload = enrich_payload_from_public_data(payload)
         data = {
             "period": payload.get("period", "user_input"),
             "currency": payload.get("financial_currency") or payload.get("currency", "HKD"),
