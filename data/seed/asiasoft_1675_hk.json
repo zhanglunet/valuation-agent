@@ -1,0 +1,28 @@
+{
+  "company_id": "asiasoft_1675_hk",
+  "market_snapshot": {
+    "ticker": "1675.HK",
+    "trade_date": "2026-04-25",
+    "currency": "HKD",
+    "share_price": 8.5,
+    "market_cap": 8075000000,
+    "shares_outstanding": 950000000,
+    "volume": null,
+    "source_url": "manual_seed_for_mvp"
+  },
+  "financial_statement": {
+    "period": "FY2025E",
+    "currency": "CNY",
+    "unit": "yuan",
+    "revenue": 8000000000,
+    "gross_profit": null,
+    "operating_profit": null,
+    "net_profit": 740000000,
+    "adjusted_net_profit": 800000000,
+    "ebitda": null,
+    "operating_cash_flow": null,
+    "cash": null,
+    "debt": null,
+    "source_url": "manual_seed_for_mvp"
+  }
+}

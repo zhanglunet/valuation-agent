@@ -1,0 +1,9 @@
+[project]
+name = "valuation-agent"
+version = "1.0.0"
+description = "Hermes Agent skills for public-market valuation analysis"
+requires-python = ">=3.9"
+dependencies = []
+
+[tool.setuptools]
+packages = ["valuation_agent"]

@@ -1,0 +1,14 @@
+{
+  "companies": {
+    "asiasoft_1675_hk": {
+      "company_id": "asiasoft_1675_hk",
+      "company_name": "亚信科技",
+      "ticker": "1675.HK",
+      "exchange": "HKEX",
+      "currency": "HKD",
+      "reporting_currency": "CNY",
+      "industry": ["通信软件", "企业数字化", "BSS/OSS"],
+      "default_target_market_cap": 20000000000
+    }
+  }
+}

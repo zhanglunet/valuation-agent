@@ -1,0 +1,29 @@
+{
+  "fx_rates": {
+    "CNYHKD": 1.08,
+    "HKDCNY": 0.9259
+  },
+  "scenario_defaults": {
+    "bear": {
+      "label": "悲观",
+      "revenue_growth": 0.02,
+      "net_margin": 0.06,
+      "pe": 12,
+      "ps": 0.8
+    },
+    "base": {
+      "label": "中性",
+      "revenue_growth": 0.06,
+      "net_margin": 0.08,
+      "pe": 18,
+      "ps": 1.2
+    },
+    "bull": {
+      "label": "乐观",
+      "revenue_growth": 0.12,
+      "net_margin": 0.1,
+      "pe": 25,
+      "ps": 1.8
+    }
+  }
+}

@@ -1,0 +1,29 @@
+model:
+  default: "openrouter:auto"
+  context_compression_threshold: 0.75
+
+fallback_model:
+  provider: openrouter
+  model: "anthropic/claude-haiku-4.5"
+
+skills:
+  paths:
+    - "~/.hermes/skills"
+    - "/Users/john/dev/估值模型/valuation-agent/skills"
+  enabled:
+    - market-data-skill
+    - financial-report-skill
+    - financial-normalization-skill
+    - valuation-skill
+    - scenario-analysis-skill
+    - peer-comparison-skill
+    - research-report-skill
+
+memory:
+  enabled: true
+  storage: sqlite
+  retention_days: 365
+
+logging:
+  level: INFO
+  agent_log: "~/.hermes/logs/valuation-agent.log"
