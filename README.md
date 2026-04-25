@@ -41,6 +41,28 @@ data/reports/asiasoft_1675_hk_valuation_report.md
 
 ## Hermes Skills 导入
 
+### 通过飞书界面安装
+
+如果 Hermes 已经接入飞书，可以在飞书里直接对 Hermes Bot 发送：
+
+```text
+/skills install zhanglunet/valuation-agent --now
+```
+
+如果当前 Hermes 部署不支持从 GitHub repo 自动识别多 Skill 目录，可以在飞书里让 Hermes Bot 执行：
+
+```text
+请安装 valuation-agent：git clone https://github.com/zhanglunet/valuation-agent.git /tmp/valuation-agent，然后把 /tmp/valuation-agent/skills/* 复制到 ~/.hermes/skills/，最后 /reset 让技能生效。
+```
+
+安装后在飞书里验证：
+
+```text
+@Hermes 亚信科技达到 200 亿港币市值，需要什么样的财务表现和估值倍数支撑？
+```
+
+### 通过本地目录导入
+
 方式一：复制到 Hermes 默认目录。
 
 ```bash
