@@ -27,6 +27,16 @@ valuation-agent/
 └── valuation_agent/
 ```
 
+## 文档
+
+- [1.0 设计方案](docs/V1_DESIGN.md)
+- [1.0 发布说明](docs/RELEASE_NOTES_v1.0.0.md)
+- [安装与导入](docs/INSTALL.md)
+- [Skills 说明](docs/SKILLS.md)
+- [程序架构](docs/ARCHITECTURE.md)
+- [Roadmap](docs/ROADMAP.md)
+- [2.0 设计方案与开发计划](docs/V2_DESIGN_AND_DEV_PLAN.md)
+
 ## 快速验证
 
 ```bash
