@@ -37,6 +37,8 @@
 
 详细设计见：[V2_DESIGN_AND_DEV_PLAN.md](V2_DESIGN_AND_DEV_PLAN.md)
 
+正式版开发计划见：[V2_FINAL_DESIGN_AND_DEV_PLAN.md](V2_FINAL_DESIGN_AND_DEV_PLAN.md)
+
 ## 2.x 后续增强
 
 - 年报 PDF 深度解析。
