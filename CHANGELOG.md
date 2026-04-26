@@ -1,5 +1,32 @@
 # Changelog
 
+## v2.0.0-beta.1 - 2026-04-26
+
+### Added
+
+- Added `--depth deep` deep research report mode.
+- Added `config/peer_groups.json`.
+- Added `valuation_agent/research_analysis.py`.
+- Added first working peer comparison analysis.
+- Added financial quality analysis.
+- Added growth driver analysis.
+- Added risk and refutation analysis.
+- Added research question list generation.
+- Added deep research Markdown report template.
+- Added tests for research analysis.
+
+### Changed
+
+- Upgraded `peer-comparison-skill` from placeholder to working beta implementation.
+- Upgraded `research-report-skill` to support `depth=deep`.
+- Updated version to `2.0.0-beta.1`.
+
+### Known Limitations
+
+- Business segment analysis is still a missing-data prompt rather than full extraction.
+- Peer groups are manually curated and limited.
+- Public data depends on Yahoo Finance endpoints and should be verified against official filings.
+
 ## v1.0.0 - 2026-04-26
 
 ### Added
@@ -26,4 +53,3 @@
 - Financial quality analysis is not implemented.
 - DCF and EV/EBITDA are not implemented.
 - DOCX / PPTX export is not implemented.
-
