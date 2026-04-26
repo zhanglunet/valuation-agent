@@ -1,0 +1,44 @@
+{
+  "rules": [
+    {
+      "id": "high_pe",
+      "metric": "pe",
+      "operator": ">",
+      "threshold": 35,
+      "risk": "估值倍数偏高",
+      "impact": "一旦增长不及预期，估值回撤可能放大",
+      "severity": "high",
+      "early_warning_metrics": ["forward_pe", "revenue_growth", "profit_growth"]
+    },
+    {
+      "id": "high_ps",
+      "metric": "ps",
+      "operator": ">",
+      "threshold": 10,
+      "risk": "收入估值倍数偏高",
+      "impact": "需要更高利润率或更快收入增长兑现，否则 PS 可能压缩",
+      "severity": "medium",
+      "early_warning_metrics": ["ps", "net_margin", "revenue_growth"]
+    },
+    {
+      "id": "thin_margin",
+      "metric": "net_margin",
+      "operator": "<",
+      "threshold": 0.05,
+      "risk": "利润率偏薄",
+      "impact": "收入增长难以有效转化为股东利润",
+      "severity": "medium",
+      "early_warning_metrics": ["net_margin", "gross_margin", "expense_ratio"]
+    },
+    {
+      "id": "loss_making",
+      "metric": "net_margin",
+      "operator": "<",
+      "threshold": 0,
+      "risk": "公司亏损",
+      "impact": "PE 估值失效，需要转向 PS、现金流或分部估值",
+      "severity": "high",
+      "early_warning_metrics": ["net_income", "free_cash_flow", "cash_burn"]
+    }
+  ]
+}

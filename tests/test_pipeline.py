@@ -28,6 +28,25 @@ class PipelineTests(unittest.TestCase):
         self.assertEqual(result["company"].ticker, "0700.HK")
         self.assertAlmostEqual(result["valuation"].target_share_price, 421.0526315789)
 
+    def test_scenarios_use_company_margin_when_available(self):
+        result = run_payload_analysis(
+            {
+                "ticker": "AAPL",
+                "company_name": "Apple Inc.",
+                "exchange": "NASDAQ",
+                "currency": "USD",
+                "target_market_cap": 3_000_000_000_000,
+                "shares_outstanding": 15_000_000_000,
+                "share_price": 190,
+                "revenue": 400_000_000_000,
+                "adjusted_net_profit": 100_000_000_000,
+            }
+        )
+        margins = {item["key"]: item["assumptions"]["net_margin"] for item in result["scenarios"]}
+        self.assertAlmostEqual(margins["base"], 0.25)
+        self.assertGreater(margins["bull"], margins["base"])
+        self.assertLess(margins["bear"], margins["base"])
+
     def test_generate_report(self):
         path = generate_markdown_report("sample_listed_company")
         self.assertTrue(path.exists())

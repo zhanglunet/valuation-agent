@@ -6,6 +6,32 @@ from .schemas import CompanyProfile, FinancialStatement, MarketSnapshot
 from .storage import load_assumptions, load_company, load_financial_statement, load_market_snapshot
 
 
+def _scenario_defaults_for_company(base_scenarios: dict, revenue: float | None, profit: float | None) -> dict:
+    if revenue is None or revenue <= 0 or profit is None:
+        return base_scenarios
+
+    current_margin = profit / revenue
+    if current_margin <= 0:
+        return base_scenarios
+
+    margin_floor = max(0.01, current_margin * 0.65)
+    margin_base = current_margin
+    margin_bull = min(0.5, current_margin * 1.12)
+    scenario_margins = {
+        "bear": margin_floor,
+        "base": margin_base,
+        "bull": margin_bull,
+    }
+
+    scenarios = {}
+    for key, item in base_scenarios.items():
+        updated = dict(item)
+        if key in scenario_margins:
+            updated["net_margin"] = scenario_margins[key]
+        scenarios[key] = updated
+    return scenarios
+
+
 def run_company_analysis(company_id: str, target_market_cap: float | None = None) -> dict:
     company = load_company(company_id)
     assumptions = load_assumptions()
@@ -27,10 +53,15 @@ def run_company_analysis(company_id: str, target_market_cap: float | None = None
         revenue=normalized.revenue,
         net_profit=normalized.adjusted_net_profit or normalized.net_profit,
     )
+    scenario_defaults = _scenario_defaults_for_company(
+        assumptions["scenario_defaults"],
+        normalized.revenue,
+        normalized.adjusted_net_profit or normalized.net_profit,
+    )
     scenarios = scenario_analysis(
         base_revenue=normalized.revenue,
         shares_outstanding=market.shares_outstanding,
-        scenarios=assumptions["scenario_defaults"],
+        scenarios=scenario_defaults,
         currency=company.currency,
     )
 
@@ -105,10 +136,15 @@ def run_payload_analysis(payload: dict) -> dict:
         revenue=normalized.revenue,
         net_profit=normalized.adjusted_net_profit or normalized.net_profit,
     )
+    scenario_defaults = _scenario_defaults_for_company(
+        assumptions["scenario_defaults"],
+        normalized.revenue,
+        normalized.adjusted_net_profit or normalized.net_profit,
+    )
     scenarios = scenario_analysis(
         base_revenue=normalized.revenue,
         shares_outstanding=shares_outstanding,
-        scenarios=payload.get("scenarios") or assumptions["scenario_defaults"],
+        scenarios=payload.get("scenarios") or scenario_defaults,
         currency=currency,
     )
 
@@ -119,4 +155,5 @@ def run_payload_analysis(payload: dict) -> dict:
         "normalized_financials": normalized,
         "valuation": valuation,
         "scenarios": scenarios,
+        "financial_history": payload.get("financial_history") or {},
     }

@@ -160,12 +160,12 @@ def _fmt_pct_inline(value: float | None) -> str:
 
 def _peer_table(peer: dict, currency: str) -> str:
     rows = [
-        "| 公司 | 代码 | 市值 | PE | PS | 净利率 | 备注 |",
-        "|---|---|---:|---:|---:|---:|---|",
+        "| 公司 | 代码 | 市值 | PE | PS | 净利率 | 可比原因 | 备注 |",
+        "|---|---|---:|---:|---:|---:|---|---|",
     ]
     target = peer["target"]
     rows.append(
-        "| {name} | {ticker} | {cap} | {pe} | {ps} | {margin} | 目标公司 |".format(
+        "| {name} | {ticker} | {cap} | {pe} | {ps} | {margin} | 目标公司 | 目标公司 |".format(
             name=target.get("company_name"),
             ticker=target.get("ticker"),
             cap=_fmt_money_inline(target.get("market_cap"), currency),
@@ -176,13 +176,14 @@ def _peer_table(peer: dict, currency: str) -> str:
     )
     for item in peer.get("peers", []):
         rows.append(
-            "| {name} | {ticker} | {cap} | {pe} | {ps} | {margin} | {note} |".format(
+            "| {name} | {ticker} | {cap} | {pe} | {ps} | {margin} | {reason} | {note} |".format(
                 name=item.get("company_name") or item.get("ticker"),
                 ticker=item.get("ticker"),
                 cap=_fmt_money_inline(item.get("market_cap"), item.get("currency") or currency),
                 pe=_fmt_multiple_inline(item.get("pe")),
                 ps=_fmt_multiple_inline(item.get("ps")),
                 margin=_fmt_pct_inline(item.get("net_margin")),
+                reason=item.get("reason", ""),
                 note=item.get("error", ""),
             )
         )
@@ -191,6 +192,33 @@ def _peer_table(peer: dict, currency: str) -> str:
 
 def _bullet_lines(items: list[str]) -> str:
     return "\n".join(f"- {item}" for item in items) if items else "- 暂无。"
+
+
+def _segment_lines(segments: dict) -> str:
+    rows = []
+    for item in segments.get("segments", []):
+        metrics = "、".join(item.get("monitoring_metrics", []))
+        rows.append(f"- **{item['name']}**（{item.get('role', 'unknown')}）：{item.get('description', '')} 跟踪指标：{metrics}。")
+    return "\n".join(rows) if rows else "- 暂无可靠业务分部数据。"
+
+
+def _history_table(history: dict, currency: str) -> str:
+    revenue = {row["as_of_date"]: row["value"] for row in history.get("revenue_history", [])}
+    profit = {row["as_of_date"]: row["value"] for row in history.get("net_profit_history", [])}
+    dates = sorted(set(revenue) | set(profit))
+    if not dates:
+        return "- 暂无多期财务数据。"
+    rows = [
+        "| 日期 | 收入 | 净利润 | 净利率 |",
+        "|---|---:|---:|---:|",
+    ]
+    for item_date in dates[-5:]:
+        revenue_value = revenue.get(item_date)
+        profit_value = profit.get(item_date)
+        rows.append(
+            f"| {item_date} | {_fmt_money_inline(revenue_value, currency)} | {_fmt_money_inline(profit_value, currency)} | {_fmt_pct_inline(profit_value / revenue_value if revenue_value and profit_value is not None else None)} |"
+        )
+    return "\n".join(rows)
 
 
 def _build_deep_report(result: dict, query: str | None = None, peer_payloads: list[dict] | None = None) -> tuple[str, str]:
@@ -243,6 +271,16 @@ def _build_deep_report(result: dict, query: str | None = None, peer_payloads: li
     ]
 
     missing_segment = _bullet_lines(segments.get("missing_fields", []))
+    segment_detail = _segment_lines(segments)
+    history = quality.get("history", {})
+    history_table = _history_table(history, company.currency)
+    missing_items = []
+    missing_items.extend(segments.get("missing_fields", []))
+    if history.get("history_quality") == "missing":
+        missing_items.append("financial_history")
+    if not peer.get("peers"):
+        missing_items.append("peer_group")
+    missing_table = _bullet_lines(sorted(set(missing_items)))
     content = f"""# {company.company_name}深度投研估值分析报告
 
 ## 1. 核心结论
@@ -267,6 +305,10 @@ def _build_deep_report(result: dict, query: str | None = None, peer_payloads: li
 
 {segments['summary']}
 
+业务分部初版：
+
+{segment_detail}
+
 当前缺失的关键分部字段：
 
 {missing_segment}
@@ -285,6 +327,14 @@ def _build_deep_report(result: dict, query: str | None = None, peer_payloads: li
 判断：{quality['summary']}
 
 质量标记：{", ".join(quality.get("quality_flags", [])) or "暂无显著异常标记"}
+
+多期财务趋势：
+
+{history_table}
+
+- 收入 CAGR：{_fmt_pct_inline(history.get('revenue_cagr'))}
+- 净利润 CAGR：{_fmt_pct_inline(history.get('profit_cagr'))}
+- 股本变化：{_fmt_pct_inline(history.get('share_count_change'))}
 
 ## 5. 增长驱动因素
 
@@ -339,6 +389,10 @@ def _build_deep_report(result: dict, query: str | None = None, peer_payloads: li
 
 - 行情数据：{market.source_url}
 - 财务数据：{normalized.source_url}
+
+关键缺失项：
+
+{missing_table}
 
 本报告基于公开信息、用户输入或 seed 示例数据生成，仅用于研究分析和系统开发验证，不构成任何投资建议。自动获取的公开数据可能存在延迟、缺失或口径差异，正式投研应以交易所公告和公司披露为准。
 """

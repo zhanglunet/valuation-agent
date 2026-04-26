@@ -1,15 +1,20 @@
-# 投研估值 Agent 1.0
+# 投研估值 Agent 2.0
 
-这是基于 Hermes Agent + Skills 的上市公司投研估值 Agent 第一版实现。
+这是基于 Hermes Agent + Skills 的上市公司投研估值 Agent。
 
-1.0 版本目标是用户只提供上市公司名称、简称或股票代码，系统自动从公开信息中查找 ticker、行情、市值、股本和财务摘要，并跑通任意上市公司的估值分析闭环，包括：
+2.0 版本目标是用户只提供上市公司名称、简称或股票代码，系统自动从公开信息中查找 ticker、行情、市值、股本和财务摘要，并生成任意上市公司的估值与深度投研分析报告，包括：
 
 - 公司基础信息读取
 - 公开行情和财务摘要自动获取
+- 公开数据本地缓存，可用 `--refresh` 强制刷新
 - 币种和单位标准化
 - 市值倒推股价
 - PE / PS 隐含倍数和所需利润测算
-- 三情景估值分析
+- 基于公司当前利润率校准的三情景估值分析
+- 业务分部拆解框架
+- 可比公司池、可比原因和同行中位数
+- 多期财务趋势、CAGR 和股本变化
+- 风险规则、反证测试和待验证问题清单
 - Markdown 投研报告生成
 - Hermes Skill 包装层
 
@@ -36,6 +41,8 @@ valuation-agent/
 - [程序架构](docs/ARCHITECTURE.md)
 - [Roadmap](docs/ROADMAP.md)
 - [2.0 设计方案与开发计划](docs/V2_DESIGN_AND_DEV_PLAN.md)
+- [2.0 正式版设计与开发计划](docs/V2_FINAL_DESIGN_AND_DEV_PLAN.md)
+- [2.0 发布说明](docs/RELEASE_NOTES_v2.0.0.md)
 
 ## 快速验证
 
@@ -44,12 +51,14 @@ cd valuation-agent
 python3 -m unittest discover -s tests
 python3 -m valuation_agent.cli generate-report --query 腾讯
 python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep
+python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep --refresh
 ```
 
 报告默认输出到：
 
 ```text
 data/reports/0700_hk_valuation_report.md
+data/reports/0700_hk_deep_research_report.md
 ```
 
 ## Hermes Skills 导入
@@ -110,8 +119,8 @@ python3 skills/research-report-skill/research_report_skill.py '{"company_name":"
 
 ## 版本边界
 
-1.0 支持通过 Yahoo Finance 公开接口自动检索上市公司基础行情和财务摘要；用户输入的参数会覆盖公开数据。本地 seed 示例仅用于测试回归。
+2.0 支持通过 Yahoo Finance 公开接口自动检索上市公司基础行情和财务摘要；用户输入的参数会覆盖公开数据。本地 seed 示例仅用于测试回归。
 
-2.0 开发态已开始支持 `--depth deep`，包含可比公司分析、财务质量、增长驱动、风险反证和待验证问题。详见 [2.0 设计方案与开发计划](docs/V2_DESIGN_AND_DEV_PLAN.md)。
+`--depth deep` 会生成深度投研报告，包含可比公司分析、财务质量、业务分部、增长驱动、风险反证和待验证问题。公开数据可能存在延迟和口径差异，正式研究仍需核验交易所公告、公司年报和最新披露。
 
 本系统仅用于研究分析辅助，不构成投资建议。

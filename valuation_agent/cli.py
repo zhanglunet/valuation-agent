@@ -23,6 +23,7 @@ def _payload_from_args(args: argparse.Namespace) -> dict:
         "target_market_cap": args.target_market_cap,
         "period": args.period,
         "unit": args.unit,
+        "refresh": args.refresh,
     }
     return {key: value for key, value in fields.items() if value is not None and value != ""}
 
@@ -87,6 +88,7 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("--unit", default=None)
     report.add_argument("--target-market-cap", type=float, default=None)
     report.add_argument("--depth", choices=["basic", "deep"], default="basic")
+    report.add_argument("--refresh", action="store_true")
     report.set_defaults(func=cmd_generate_report)
 
     analyze = sub.add_parser("analyze")

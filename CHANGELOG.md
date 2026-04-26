@@ -1,5 +1,30 @@
 # Changelog
 
+## v2.0.0 - 2026-04-26
+
+### Added
+
+- Added public data JSON cache under `data/raw/` with `--refresh` support.
+- Added business segment profiles for representative listed companies.
+- Added configurable risk rules.
+- Added peer comparison reasons and cleaner peer median filtering.
+- Added multi-period financial history analysis, CAGR, margin trend, and share count change.
+- Added deep report sections for business segments, financial trend tables, missing items, peer reasons, and risk/refutation checks.
+- Added dynamic scenario margins based on the company's current profitability.
+- Added tests for cache, business profiles, financial history, risk rules, and dynamic scenarios.
+
+### Changed
+
+- Promoted deep research mode from beta to the 2.0 formal implementation.
+- Updated Skills and CLI docs for `depth=deep` and `refresh`.
+- Improved `scenario-analysis-skill` to use the same dynamic scenario logic as the core pipeline.
+
+### Known Limitations
+
+- Business segment details are profile-based and still require annual report verification.
+- Peer groups are curated and should be expanded by industry.
+- Public data depends on Yahoo Finance endpoints and should be verified against official filings.
+
 ## v2.0.0-beta.1 - 2026-04-26
 
 ### Added

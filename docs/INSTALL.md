@@ -74,6 +74,8 @@ cp -r /Users/john/dev/估值模型/valuation-agent/skills/* ~/.hermes/skills/
 cd /Users/john/dev/估值模型/valuation-agent
 python3 -m unittest discover -s tests
 python3 -m valuation_agent.cli generate-report --query 腾讯
+python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep
+python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep --refresh
 ```
 
 ## 5. Hermes 验收问题

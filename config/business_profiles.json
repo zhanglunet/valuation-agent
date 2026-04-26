@@ -1,0 +1,135 @@
+{
+  "profiles": {
+    "0700.HK": {
+      "summary": "腾讯的业务通常可分为增值服务、网络广告、金融科技及企业服务等板块。分部数据需以公司年报和公告为准。",
+      "segments": [
+        {
+          "name": "增值服务",
+          "role": "core",
+          "description": "包括游戏、社交网络和数字内容，是腾讯长期核心盈利来源。",
+          "monitoring_metrics": ["game_revenue_growth", "social_network_revenue", "gross_margin"]
+        },
+        {
+          "name": "网络广告",
+          "role": "growth",
+          "description": "受流量生态、视频号、广告技术和宏观消费环境影响。",
+          "monitoring_metrics": ["ad_revenue_growth", "ad_load", "cpm"]
+        },
+        {
+          "name": "金融科技及企业服务",
+          "role": "strategic",
+          "description": "包括支付、金融科技、云服务和企业数字化服务。",
+          "monitoring_metrics": ["fintech_revenue_growth", "cloud_revenue", "enterprise_service_margin"]
+        }
+      ]
+    },
+    "9988.HK": {
+      "summary": "阿里巴巴主要包括中国商业、国际商业、本地生活、菜鸟、云智能和数字媒体娱乐等业务。分部数据需以公司最新披露为准。",
+      "segments": [
+        {
+          "name": "中国商业",
+          "role": "core",
+          "description": "电商平台和商家服务构成核心利润来源。",
+          "monitoring_metrics": ["customer_management_revenue", "gmv", "take_rate"]
+        },
+        {
+          "name": "云智能",
+          "role": "strategic",
+          "description": "云计算和 AI 相关业务是估值重估的重要变量。",
+          "monitoring_metrics": ["cloud_revenue_growth", "cloud_margin", "ai_product_revenue"]
+        }
+      ]
+    },
+    "AAPL": {
+      "summary": "Apple 的业务主要由 iPhone、Mac、iPad、Wearables/Home/Accessories 和 Services 构成，Services 是利润率和估值稳定性的关键变量。",
+      "segments": [
+        {
+          "name": "iPhone",
+          "role": "core",
+          "description": "硬件收入核心，受换机周期、产品创新和区域需求影响。",
+          "monitoring_metrics": ["iphone_revenue_growth", "unit_demand", "average_selling_price"]
+        },
+        {
+          "name": "Services",
+          "role": "quality",
+          "description": "服务业务通常具备更高毛利率，是利润质量和估值韧性的关键来源。",
+          "monitoring_metrics": ["services_revenue_growth", "services_gross_margin", "paid_subscriptions"]
+        },
+        {
+          "name": "Wearables/Home/Accessories",
+          "role": "growth",
+          "description": "生态硬件延展业务，体现用户粘性和生态扩张。",
+          "monitoring_metrics": ["wearables_revenue_growth"]
+        }
+      ]
+    },
+    "MSFT": {
+      "summary": "Microsoft 主要包括 Productivity and Business Processes、Intelligent Cloud、More Personal Computing。云业务和 AI 是中长期核心驱动。",
+      "segments": [
+        {
+          "name": "Productivity and Business Processes",
+          "role": "core",
+          "description": "Office、LinkedIn、Dynamics 等生产力业务，提供稳定现金流。",
+          "monitoring_metrics": ["office_commercial_growth", "linkedIn_growth"]
+        },
+        {
+          "name": "Intelligent Cloud",
+          "role": "growth",
+          "description": "Azure 和服务器产品，是云和 AI 主题下的关键增长引擎。",
+          "monitoring_metrics": ["azure_growth", "cloud_margin"]
+        }
+      ]
+    },
+    "NVDA": {
+      "summary": "Nvidia 业务核心包括 Data Center、Gaming、Professional Visualization、Automotive 等，数据中心和 AI 加速器是估值核心。",
+      "segments": [
+        {
+          "name": "Data Center",
+          "role": "core_growth",
+          "description": "AI 训练和推理需求驱动的核心增长来源。",
+          "monitoring_metrics": ["data_center_revenue_growth", "gpu_supply", "gross_margin"]
+        },
+        {
+          "name": "Gaming",
+          "role": "cyclical",
+          "description": "游戏 GPU 业务具备周期性和产品周期属性。",
+          "monitoring_metrics": ["gaming_revenue_growth"]
+        }
+      ]
+    },
+    "600519.SS": {
+      "summary": "贵州茅台业务以茅台酒为核心，系列酒为补充，渠道结构、出厂价、批价和直营占比是关键变量。",
+      "segments": [
+        {
+          "name": "茅台酒",
+          "role": "core",
+          "description": "品牌和稀缺性构成核心盈利来源。",
+          "monitoring_metrics": ["moutai_liquor_revenue", "wholesale_price", "direct_sales_ratio"]
+        },
+        {
+          "name": "系列酒",
+          "role": "growth",
+          "description": "补充增长来源，需观察品牌梯队和渠道扩张。",
+          "monitoring_metrics": ["series_liquor_revenue_growth"]
+        }
+      ]
+    },
+    "1211.HK": {
+      "summary": "比亚迪业务包括汽车及相关产品、手机部件及组装、二次充电电池及光伏等，新能源汽车销量、产品结构和电池业务是核心变量。",
+      "segments": [
+        {
+          "name": "汽车及相关产品",
+          "role": "core_growth",
+          "description": "新能源汽车销量、车型结构和出口进展决定主要增长弹性。",
+          "monitoring_metrics": ["vehicle_sales", "asp", "export_volume", "auto_margin"]
+        },
+        {
+          "name": "电池及光伏",
+          "role": "strategic",
+          "description": "电池技术和垂直整合能力影响利润率和长期竞争力。",
+          "monitoring_metrics": ["battery_revenue", "battery_margin"]
+        }
+      ]
+    }
+  }
+}

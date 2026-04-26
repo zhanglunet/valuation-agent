@@ -34,6 +34,16 @@ def _load_peer_groups() -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _load_json_config(filename: str, default: dict) -> dict:
+    path = CONFIG_DIR / filename
+    if not path.exists():
+        return default
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return default
+
+
 def _result_market_cap(result: dict) -> float | None:
     return result["market"].market_cap
 
@@ -67,6 +77,8 @@ def _peer_record_from_payload(payload: dict) -> dict:
         "pe": implied_pe(market_cap, profit),
         "ps": implied_ps(market_cap, revenue),
         "source_url": enriched.get("market_source_url") or enriched.get("financial_source_url"),
+        "reason": payload.get("reason"),
+        "strength": payload.get("strength", "medium"),
     }
 
 
@@ -111,6 +123,8 @@ def peer_comparison(result: dict, query: str | None = None, peer_payloads: list[
     group = select_peer_group(result, query=query)
     peer_records: list[dict] = []
 
+    reasons = group.get("reasons", {})
+
     if peer_payloads is not None:
         peer_records = [_peer_record_from_payload(payload) for payload in peer_payloads]
     else:
@@ -118,14 +132,22 @@ def peer_comparison(result: dict, query: str | None = None, peer_payloads: list[
             if ticker == target["ticker"]:
                 continue
             try:
-                peer_records.append(_peer_record_from_payload({"ticker": ticker}))
+                peer_records.append(
+                    _peer_record_from_payload(
+                        {
+                            "ticker": ticker,
+                            "reason": reasons.get(ticker, "同属可比公司池，业务或估值具备参考意义。"),
+                            "strength": "strong" if ticker in reasons else "medium",
+                        }
+                    )
+                )
             except Exception as exc:  # External data is best-effort in 2.0.
-                peer_records.append({"ticker": ticker, "company_name": ticker, "error": str(exc)})
+                peer_records.append({"ticker": ticker, "company_name": ticker, "reason": reasons.get(ticker), "error": str(exc)})
             if len(peer_records) >= max_peers:
                 break
 
-    valid_pe = [item["pe"] for item in peer_records if isinstance(item.get("pe"), (int, float))]
-    valid_ps = [item["ps"] for item in peer_records if isinstance(item.get("ps"), (int, float))]
+    valid_pe = [item["pe"] for item in peer_records if isinstance(item.get("pe"), (int, float)) and 0 < item["pe"] < 100]
+    valid_ps = [item["ps"] for item in peer_records if isinstance(item.get("ps"), (int, float)) and 0 < item["ps"] < 50]
     valid_margin = [item["net_margin"] for item in peer_records if isinstance(item.get("net_margin"), (int, float))]
 
     medians = {
@@ -179,6 +201,7 @@ def financial_quality(result: dict) -> dict:
     earnings_yield = _safe_div(profit, market_cap)
     ps = implied_ps(market_cap, revenue)
     pe = implied_pe(market_cap, profit)
+    history = financial_history_analysis(result.get("financial_history") or {})
 
     flags = []
     if revenue is None:
@@ -205,7 +228,62 @@ def financial_quality(result: dict) -> dict:
         "pe": pe,
         "ps": ps,
         "quality_flags": flags,
+        "history": history,
         "summary": _financial_quality_summary(net_margin, pe, ps, flags),
+    }
+
+
+def _history_rows(history: dict, key: str) -> list[dict]:
+    rows = history.get(key) or []
+    valid_rows = [row for row in rows if isinstance(row.get("value"), (int, float))]
+    return sorted(valid_rows, key=lambda row: row.get("as_of_date") or "")
+
+
+def _cagr(first: float | None, last: float | None, periods: int) -> float | None:
+    if first is None or last is None or first <= 0 or last <= 0 or periods <= 0:
+        return None
+    return (last / first) ** (1 / periods) - 1
+
+
+def financial_history_analysis(history: dict) -> dict:
+    revenue_rows = _history_rows(history, "annualTotalRevenue")
+    profit_rows = _history_rows(history, "annualNetIncome")
+    share_rows = _history_rows(history, "trailingDilutedAverageShares") or _history_rows(history, "trailingBasicAverageShares")
+    ocf_rows = _history_rows(history, "annualOperatingCashFlow")
+    fcf_rows = _history_rows(history, "annualFreeCashFlow")
+
+    periods = min(len(revenue_rows), len(profit_rows))
+    margin_trend = []
+    if periods:
+        by_date_profit = {row["as_of_date"]: row["value"] for row in profit_rows}
+        for row in revenue_rows:
+            profit = by_date_profit.get(row["as_of_date"])
+            margin = _safe_div(profit, row["value"])
+            if margin is not None:
+                margin_trend.append({"as_of_date": row["as_of_date"], "net_margin": margin})
+
+    revenue_cagr = None
+    if len(revenue_rows) >= 2:
+        revenue_cagr = _cagr(revenue_rows[0]["value"], revenue_rows[-1]["value"], len(revenue_rows) - 1)
+    profit_cagr = None
+    if len(profit_rows) >= 2:
+        profit_cagr = _cagr(profit_rows[0]["value"], profit_rows[-1]["value"], len(profit_rows) - 1)
+    share_count_change = None
+    if len(share_rows) >= 2:
+        share_count_change = _safe_div(share_rows[-1]["value"], share_rows[0]["value"])
+        if share_count_change is not None:
+            share_count_change -= 1
+
+    return {
+        "revenue_history": revenue_rows[-5:],
+        "net_profit_history": profit_rows[-5:],
+        "operating_cash_flow_history": ocf_rows[-5:],
+        "free_cash_flow_history": fcf_rows[-5:],
+        "margin_trend": margin_trend[-5:],
+        "revenue_cagr": revenue_cagr,
+        "profit_cagr": profit_cagr,
+        "share_count_change": share_count_change,
+        "history_quality": "available" if revenue_rows or profit_rows else "missing",
     }
 
 
@@ -231,6 +309,16 @@ def _financial_quality_summary(net_margin: float | None, pe: float | None, ps: f
 
 def business_segment_analysis(result: dict) -> dict:
     company = result["company"]
+    profiles = _load_json_config("business_profiles.json", {"profiles": {}}).get("profiles", {})
+    profile = profiles.get(company.ticker)
+    if profile:
+        return {
+            "segments": profile.get("segments", []),
+            "segment_quality": "profile",
+            "summary": profile.get("summary", ""),
+            "missing_fields": ["segment_revenue", "segment_growth", "segment_margin"],
+            "industry_context": company.industry,
+        }
     return {
         "segments": [],
         "segment_quality": "missing",
@@ -305,6 +393,10 @@ def risk_and_refutation(result: dict, quality: dict, peer: dict) -> dict:
             }
         )
 
+    for risk in _risk_rules_from_config(quality):
+        if risk["risk"] not in {item["risk"] for item in risks}:
+            risks.append(risk)
+
     refutation_tests = [
         {
             "hypothesis": "当前估值可以由盈利能力支撑",
@@ -323,6 +415,41 @@ def risk_and_refutation(result: dict, quality: dict, peer: dict) -> dict:
             }
         )
     return {"risks": risks, "refutation_tests": refutation_tests}
+
+
+def _risk_rules_from_config(quality: dict) -> list[dict]:
+    config = _load_json_config("risk_rules.json", {"rules": []})
+    metrics = {
+        "pe": quality.get("pe"),
+        "ps": quality.get("ps"),
+        "net_margin": quality.get("net_margin"),
+    }
+    triggered = []
+    seen = set()
+    for rule in config.get("rules", []):
+        metric_value = metrics.get(rule.get("metric"))
+        if metric_value is None:
+            continue
+        threshold = rule.get("threshold")
+        operator = rule.get("operator")
+        if threshold is None:
+            continue
+        matched = False
+        if operator == ">":
+            matched = metric_value > threshold
+        elif operator == "<":
+            matched = metric_value < threshold
+        if matched and rule.get("id") not in seen:
+            seen.add(rule.get("id"))
+            triggered.append(
+                {
+                    "risk": rule["risk"],
+                    "impact": rule["impact"],
+                    "early_warning_metrics": rule.get("early_warning_metrics", []),
+                    "severity": rule.get("severity", "medium"),
+                }
+            )
+    return triggered
 
 
 def question_list(result: dict, segment: dict, peer: dict, quality: dict) -> dict:
