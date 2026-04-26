@@ -1,0 +1,24 @@
+{
+  "groups": {
+    "hk_internet": {
+      "name": "港股互联网平台",
+      "tickers": ["0700.HK", "9988.HK", "3690.HK", "9618.HK", "9888.HK"],
+      "aliases": ["腾讯", "腾讯控股", "阿里", "阿里巴巴", "美团", "京东", "百度"]
+    },
+    "us_big_tech": {
+      "name": "美股大型科技",
+      "tickers": ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "NVDA"],
+      "aliases": ["apple", "苹果", "microsoft", "微软", "google", "amazon", "meta", "nvidia", "英伟达"]
+    },
+    "ev": {
+      "name": "新能源车",
+      "tickers": ["TSLA", "1211.HK", "LI", "NIO", "XPEV"],
+      "aliases": ["tesla", "特斯拉", "byd", "比亚迪", "理想", "蔚来", "小鹏"]
+    },
+    "baijiu": {
+      "name": "A 股白酒",
+      "tickers": ["600519.SS", "000858.SZ", "000568.SZ", "600809.SS"],
+      "aliases": ["贵州茅台", "茅台", "五粮液", "泸州老窖", "山西汾酒"]
+    }
+  }
+}

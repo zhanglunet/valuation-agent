@@ -78,6 +78,8 @@ def resolve_symbol(query: str) -> dict:
         "company_name": best.get("longname") or best.get("shortname") or query,
         "exchange": best.get("exchDisp") or best.get("exchange", ""),
         "quote_type": best.get("quoteType", ""),
+        "sector": best.get("sectorDisp") or best.get("sector"),
+        "industry": best.get("industryDisp") or best.get("industry"),
         "source_url": url,
     }
 
@@ -190,6 +192,7 @@ def lookup_public_company(query: str) -> dict:
         "exchange": quote_data.get("exchange") or resolved["exchange"],
         "currency": quote_data.get("currency") or financials.get("currency") or "USD",
         "financial_currency": financials.get("currency") or quote_data.get("currency") or "USD",
+        "industry": [item for item in [resolved.get("sector"), resolved.get("industry")] if item],
         "share_price": quote_data.get("share_price"),
         "market_cap": market_cap,
         "shares_outstanding": shares_outstanding,

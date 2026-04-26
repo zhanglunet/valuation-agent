@@ -3,7 +3,7 @@ import json
 
 from .calculators import calculate_valuation
 from .pipeline import run_company_analysis
-from .reporting import generate_markdown_report, generate_markdown_report_from_payload
+from .reporting import generate_deep_markdown_report, generate_deep_markdown_report_from_payload, generate_markdown_report, generate_markdown_report_from_payload
 
 
 def _payload_from_args(args: argparse.Namespace) -> dict:
@@ -29,9 +29,16 @@ def _payload_from_args(args: argparse.Namespace) -> dict:
 
 def cmd_generate_report(args: argparse.Namespace) -> None:
     if args.company:
-        path = generate_markdown_report(args.company, args.target_market_cap)
+        if args.depth == "deep":
+            path = generate_deep_markdown_report(args.company, args.target_market_cap)
+        else:
+            path = generate_markdown_report(args.company, args.target_market_cap)
     else:
-        path = generate_markdown_report_from_payload(_payload_from_args(args))
+        payload = _payload_from_args(args)
+        if args.depth == "deep":
+            path = generate_deep_markdown_report_from_payload(payload)
+        else:
+            path = generate_markdown_report_from_payload(payload)
     print(json.dumps({"status": "ok", "report_path": str(path)}, ensure_ascii=False, indent=2))
 
 
@@ -79,6 +86,7 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("--period", default=None)
     report.add_argument("--unit", default=None)
     report.add_argument("--target-market-cap", type=float, default=None)
+    report.add_argument("--depth", choices=["basic", "deep"], default="basic")
     report.set_defaults(func=cmd_generate_report)
 
     analyze = sub.add_parser("analyze")

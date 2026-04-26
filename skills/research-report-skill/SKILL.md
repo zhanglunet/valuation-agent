@@ -9,11 +9,11 @@ license: internal
 ## 输入
 
 ```json
-{"company_name":"腾讯"}
+{"company_name":"腾讯","depth":"deep"}
 ```
 
 ## 调用
 
 ```bash
-python3 research_report_skill.py '{"company_name":"腾讯"}'
+python3 research_report_skill.py '{"company_name":"腾讯","depth":"deep"}'
 ```

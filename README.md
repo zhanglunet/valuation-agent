@@ -43,6 +43,7 @@ valuation-agent/
 cd valuation-agent
 python3 -m unittest discover -s tests
 python3 -m valuation_agent.cli generate-report --query 腾讯
+python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep
 ```
 
 报告默认输出到：
@@ -101,8 +102,16 @@ python3 skills/valuation-skill/valuation_skill.py '{"company_name":"腾讯"}'
 python3 skills/research-report-skill/research_report_skill.py '{"company_name":"腾讯"}'
 ```
 
+深度投研报告：
+
+```bash
+python3 skills/research-report-skill/research_report_skill.py '{"company_name":"腾讯","depth":"deep"}'
+```
+
 ## 版本边界
 
 1.0 支持通过 Yahoo Finance 公开接口自动检索上市公司基础行情和财务摘要；用户输入的参数会覆盖公开数据。本地 seed 示例仅用于测试回归。
+
+2.0 开发态已开始支持 `--depth deep`，包含可比公司分析、财务质量、增长驱动、风险反证和待验证问题。详见 [2.0 设计方案与开发计划](docs/V2_DESIGN_AND_DEV_PLAN.md)。
 
 本系统仅用于研究分析辅助，不构成投资建议。
