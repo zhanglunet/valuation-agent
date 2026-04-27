@@ -33,13 +33,13 @@
 用户侧仍保持一句话入口：
 
 ```text
-请分析腾讯控股
+请分析<某上市公司>
 ```
 
 或：
 
 ```text
-请分析 Apple
+请分析 <ticker>
 ```
 
 系统内部自动完成：
@@ -97,11 +97,11 @@ flowchart TD
 
 ```json
 {
-  "company_name": "Tencent Holdings Limited",
-  "ticker": "0700.HK",
-  "exchange": "HKSE",
-  "currency": "HKD",
-  "industry": "Interactive Media & Services",
+  "company_name": "<Listed Company Limited>",
+  "ticker": "<TICKER>",
+  "exchange": "<HKSE | NYSE | SSE | SZSE>",
+  "currency": "<HKD | USD | CNY>",
+  "industry": "<行业分类>",
   "source": "alias_or_public_search"
 }
 ```
@@ -109,7 +109,7 @@ flowchart TD
 开发重点：
 
 - 扩充中文别名表。
-- 增加歧义处理，例如“Apple”可能是公司，也可能是普通词。
+- 增加歧义处理，例如某英文短词既可能指代公司，也可能是普通词。
 - 返回候选列表，而不是只返回第一个结果。
 
 ### 4.2 业务分部拆解模块
@@ -485,7 +485,7 @@ data/
 验收：
 
 - 1.0 所有测试继续通过。
-- `generate-report --query 腾讯` 继续可用。
+- `generate-report --query <company>` 继续可用。
 
 ### Phase 1：可比公司分析，2-3 天
 
@@ -507,7 +507,7 @@ data/
 验收：
 
 ```bash
-python3 skills/peer-comparison-skill/peer_comparison_skill.py '{"company_name":"腾讯"}'
+python3 skills/peer-comparison-skill/peer_comparison_skill.py '{"company_name":"<company>"}'
 ```
 
 应输出：
@@ -568,7 +568,7 @@ python3 skills/peer-comparison-skill/peer_comparison_skill.py '{"company_name":"
 验收：
 
 ```bash
-python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep
+python3 -m valuation_agent.cli generate-report --query <company> --depth deep
 ```
 
 输出报告包含：
@@ -587,7 +587,7 @@ python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep
 验收问题：
 
 ```text
-请深度分析腾讯控股
+请深度分析<某上市公司>
 ```
 
 期望：

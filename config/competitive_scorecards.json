@@ -1,0 +1,44 @@
+{
+  "default": {
+    "weights": {
+      "gateway_control": 0.10,
+      "data_security": 0.10,
+      "agent_lifecycle": 0.10,
+      "industry_knowhow": 0.10,
+      "channel_access": 0.10,
+      "technology": 0.10,
+      "system_integration": 0.10,
+      "retention": 0.10,
+      "resource_mobilization": 0.10,
+      "repeatable_methodology": 0.10
+    }
+  },
+  "ai_agent_platform": {
+    "weights": {
+      "gateway_control": 0.12,
+      "data_security": 0.12,
+      "agent_lifecycle": 0.15,
+      "industry_knowhow": 0.05,
+      "channel_access": 0.12,
+      "technology": 0.15,
+      "system_integration": 0.10,
+      "retention": 0.08,
+      "resource_mobilization": 0.05,
+      "repeatable_methodology": 0.06
+    }
+  },
+  "enterprise_software": {
+    "weights": {
+      "gateway_control": 0.08,
+      "data_security": 0.15,
+      "agent_lifecycle": 0.05,
+      "industry_knowhow": 0.15,
+      "channel_access": 0.10,
+      "technology": 0.10,
+      "system_integration": 0.15,
+      "retention": 0.10,
+      "resource_mobilization": 0.05,
+      "repeatable_methodology": 0.07
+    }
+  }
+}

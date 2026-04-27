@@ -9,3 +9,5 @@ venv/
 .DS_Store
 data/reports/*.md
 data/raw/
+output/
+scratch/

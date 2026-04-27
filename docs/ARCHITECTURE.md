@@ -1,38 +1,81 @@
 # 程序架构
 
+## 总体管线（v3）
+
 ```mermaid
 flowchart TD
-    User["用户问题"] --> Hermes["Hermes Agent"]
+    User["用户问题<br/>公司名 / ProjectAssumptions JSON"] --> Hermes["Hermes Agent<br/>(可选)"]
     Hermes --> Skills["Skills"]
+    User --> CLI["CLI"]
     Skills --> Core["valuation_agent 核心包"]
-    Core --> Seed["seed 数据"]
-    Core --> PublicData["公开市场数据"]
-    PublicData --> Cache["data/raw 缓存"]
-    Core --> Calc["估值计算器"]
-    Core --> Research["深度投研分析"]
-    Core --> Report["Markdown 报告"]
+    CLI --> Core
+
+    Core --> Validator["assumption_validator<br/>来源/概率/分账互斥/风险情景重叠"]
+    Validator -->|reject| Reject([报错并打印待补充字段])
+    Validator -->|pass| V3Pipe
+
+    subgraph V3Pipe["v3 项目级管线"]
+        Project["project_valuation"]
+        Risk["risk_expected_loss"]
+        Control["strategic_control"]
+        Comp["competitive_scorecard"]
+        Attr["value_attribution"]
+        Agent["agent_harness_valuation"]
+    end
+
+    Core --> V2Pipe["v2 公司级管线<br/>pipeline / public_data /<br/>research_analysis / cache"]
+
+    V3Pipe --> RepV3["reporting_v3<br/>条件骨架"]
+    V2Pipe --> Reporting["reporting<br/>v2 报告"]
+
+    RepV3 --> Markdown(["Markdown 报告<br/>+ 假设审计表"])
+    Reporting --> Markdown
 ```
 
-## 核心包
+## 模块职责
 
-- `schemas.py`：公共数据模型。
+### v3 新增模块
+
+- `schemas.py`（扩充）：v3 数据结构 `SourcedValue` / `ProjectAssumptions` / `ScenarioOverride` / `CashFlowResult` / `StrategicControlScore` / `CompetitiveScoreResult` / `RiskExpectedLoss` / `ValueAttribution` / `AgentHarnessScore` / `AssumptionAudit`。
+- `assumption_validator.py`：项目假设强校验（来源等级、归属方法互斥、五情景概率和、风险/情景重叠）+ 报告假设审计表生成。
+- `project_valuation.py`：FCF / IRR / MOIC / Payback / NPV 计算；五情景遍历与概率加权 NPV。
+- `risk_expected_loss.py`：按情景概率/损失矩阵；仅扣减基准情景 NPV。
+- `strategic_control.py`：10 维控制点评分 + 四因子映射到公司估值溢价。
+- `competitive_scorecard.py`：复用 10 维 schema 计算相对位次与多倍数溢价建议。
+- `value_attribution.py`：行级 owner_share 与项目级 partner_shares 互斥；NPV 与 market_cap_uplift 两步分离。
+- `agent_harness_valuation.py`：AI Agent / Harness 六维加权 + Token 调节器 + 估值溢价带映射。
+- `reporting_v3.py`：按 `--depth` 路由三种骨架（strategic / project / agent）。
+
+### v1 / v2 模块（继承）
+
 - `storage.py`：配置和 seed 数据读取。
 - `calculators.py`：估值、标准化、情景分析。
 - `public_data.py`：公司检索、行情和公开财务数据获取。
 - `cache.py`：公开数据 JSON 缓存。
 - `pipeline.py`：端到端分析编排。
 - `research_analysis.py`：可比公司、财务质量、业务分部、驱动因素、风险反证和问题清单。
-- `reporting.py`：报告生成。
-- `cli.py`：命令行入口。
+- `reporting.py`：v1/v2 报告生成。
+- `cli.py`：命令行入口（v3 扩充 `--depth strategic|project|agent` 与对应参数）。
 
-## 2.0 边界
+## 关键设计原则
 
-2.0 通过 Yahoo Finance 公开接口自动检索任意上市公司的 ticker、行情、市值、股本、财务摘要和多期财务历史。用户也可以显式输入 ticker、股本、收入、利润、目标市值等参数覆盖公开数据；`data/seed/sample_listed_company.json` 仅作为本地回归测试示例。
+1. **假设来源显式化**：每条数字带 `source` 等级（L1 user_explicit ~ L5 derived），禁止 L6 fabricated。`assumption_validator` 在所有计算前强制校验。
+2. **不重复扣减**：风险矩阵与五情景叙事互斥（前置校验）；行级 owner_share 与项目级 partner_shares 互斥（前置校验）。
+3. **小项目不放大估值**：控制点 → 公司估值溢价采用四因子（控制点 × 战略权重 × 收入占比 × 叙事放大）映射，project_revenue_share 强力衰减。
+4. **报告骨架按输入分支**：纯公司请求渲染 12 节，公司+项目渲染 13 节，公司+AI Agent 项目额外插入 Agent/Harness 子节。
+5. **缺失不编造**：缺失字段集中聚合到"待补充字段"清单。`fabricated` 来源直接抛错，不进入计算。
 
-中文简称先通过 `config/company_aliases.json` 解析到公开市场 ticker，再进入公开数据抓取流程；未命中别名表时，回退到 Yahoo Finance 搜索。
+## 配置文件
 
-深度报告由 `research_analysis.py` 负责组织，当前主要依赖：
-
-- `config/peer_groups.json`：同行池和可比原因。
-- `config/business_profiles.json`：业务分部初始 profile。
-- `config/risk_rules.json`：可配置风险触发规则。
+| 文件 | 用途 |
+|---|---|
+| `config/company_aliases.json` | 中文别名 → ticker（v1） |
+| `config/peer_groups.json` | 同行池与可比原因（v2） |
+| `config/business_profiles.json` | 业务分部 profile（v2） |
+| `config/risk_rules.json` | 公司级风险触发规则（v2） |
+| `config/strategic_control_weights.json` | 10 维控制点权重（v3） |
+| `config/competitive_scorecards.json` | 行业级竞争评分权重（v3） |
+| `config/agent_harness_weights.json` | Agent / Harness 六维权重（v3） |
+| `config/project_templates.json` | 项目类型模板（v3） |
+| `config/risk_matrix_templates.json` | 风险矩阵模板（v3） |
+| `config/partner_split_templates.json` | 合作分账模板（v3） |

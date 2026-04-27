@@ -16,14 +16,14 @@ Release date: 2026-04-26
 ## Example
 
 ```bash
-python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep
-python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep --refresh
+python3 -m valuation_agent.cli generate-report --query <company> --depth deep
+python3 -m valuation_agent.cli generate-report --query <company> --depth deep --refresh
 ```
 
 ## Validation
 
 - Unit tests: `22 passed`
-- Real public-data smoke test: Tencent deep research report generated successfully.
+- Real public-data smoke test: representative listed-company deep research report generated successfully.
 
 ## Notes
 

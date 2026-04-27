@@ -1,0 +1,19 @@
+{
+  "model_vendor_channel_operator_integrator": {
+    "description": "AI Agent project with model vendor + channel partner + integrator + client.",
+    "roles": [
+      {"role": "listed_company", "default_share": 0.45, "description": "目标上市公司：交付、行业 Know-how、运营"},
+      {"role": "model_vendor", "default_share": 0.25, "description": "模型推理与 API"},
+      {"role": "channel_partner", "default_share": 0.15, "description": "渠道与客户触达"},
+      {"role": "ecosystem_partner", "default_share": 0.10, "description": "硬件、安全或生态实施伙伴"},
+      {"role": "client", "default_share": 0.05, "description": "客户保留权或返点"}
+    ]
+  },
+  "two_party_partnership": {
+    "description": "Simple two-party project (listed company + client).",
+    "roles": [
+      {"role": "listed_company", "default_share": 0.70, "description": "目标上市公司"},
+      {"role": "client", "default_share": 0.30, "description": "客户方/合作甲方"}
+    ]
+  }
+}

@@ -41,7 +41,7 @@ hermes config set OPENROUTER_API_KEY "your-key"
 然后验证：
 
 ```text
-@Hermes 请用 valuation-agent 分析腾讯控股
+@Hermes 请用 valuation-agent 分析<某上市公司>
 ```
 
 如果当前 Hermes 部署不支持从 GitHub repo 自动识别多个 Skill 目录，可以在飞书里让 Hermes 执行以下安装动作：
@@ -73,13 +73,13 @@ cp -r /Users/john/dev/估值模型/valuation-agent/skills/* ~/.hermes/skills/
 ```bash
 cd /Users/john/dev/估值模型/valuation-agent
 python3 -m unittest discover -s tests
-python3 -m valuation_agent.cli generate-report --query 腾讯
-python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep
-python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep --refresh
+python3 -m valuation_agent.cli generate-report --query <company>
+python3 -m valuation_agent.cli generate-report --query <company> --depth deep
+python3 -m valuation_agent.cli generate-report --query <company> --depth deep --refresh
 ```
 
 ## 5. Hermes 验收问题
 
 ```bash
-hermes chat -q "请用 valuation-agent 分析腾讯"
+hermes chat -q "请用 valuation-agent 分析<某上市公司>"
 ```

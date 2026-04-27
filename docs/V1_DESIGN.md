@@ -7,13 +7,13 @@ Valuation Agent 1.0 是一个面向上市公司的公开信息估值分析 Agent
 1.0 的核心使用方式：
 
 ```text
-请分析腾讯控股
+请分析<某上市公司>
 ```
 
 或：
 
 ```bash
-python3 -m valuation_agent.cli generate-report --query 腾讯
+python3 -m valuation_agent.cli generate-report --query <company>
 ```
 
 系统会自动完成：
@@ -90,9 +90,9 @@ flowchart TD
 
 ```json
 {
-  "腾讯": "0700.HK",
-  "苹果": "AAPL",
-  "贵州茅台": "600519.SS"
+  "<中文别名 A>": "<TICKER_A>",
+  "<中文别名 B>": "<TICKER_B>",
+  "<中文别名 C>": "<TICKER_C>"
 }
 ```
 
@@ -214,21 +214,21 @@ data/reports/
 ### 7.1 公司名自动分析
 
 ```bash
-python3 -m valuation_agent.cli generate-report --query 腾讯
+python3 -m valuation_agent.cli generate-report --query <company>
 ```
 
 ### 7.2 股票代码自动分析
 
 ```bash
-python3 -m valuation_agent.cli generate-report --query AAPL
+python3 -m valuation_agent.cli generate-report --query <TICKER>
 ```
 
 ### 7.3 手工参数覆盖
 
 ```bash
 python3 -m valuation_agent.cli generate-report \
-  --ticker AAPL \
-  --company-name "Apple Inc." \
+  --ticker <TICKER> \
+  --company-name "<Listed Company Inc.>" \
   --currency USD \
   --target-market-cap 3000000000000 \
   --shares-outstanding 15000000000 \
@@ -248,7 +248,7 @@ python3 -m valuation_agent.cli generate-report \
 使用：
 
 ```text
-@Hermes 请用 valuation-agent 分析腾讯控股
+@Hermes 请用 valuation-agent 分析<某上市公司>
 ```
 
 如果当前 Hermes 部署不支持从 GitHub repo 自动识别多 Skill 目录，可以手工复制：

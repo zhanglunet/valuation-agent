@@ -1,7 +1,7 @@
 [project]
 name = "valuation-agent"
-version = "1.0.0"
-description = "Hermes Agent skills for public-market valuation analysis"
+version = "3.0.0"
+description = "Hermes Agent skills for strategic valuation analysis: company-level + project-level cash-flow attribution"
 requires-python = ">=3.9"
 dependencies = []
 

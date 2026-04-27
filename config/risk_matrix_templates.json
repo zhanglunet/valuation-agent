@@ -1,0 +1,39 @@
+{
+  "ai_agent_project": [
+    {
+      "risk_name": "compliance_blocker",
+      "category": "compliance",
+      "default_probability": {"base": 0.20, "bear": 0.35, "bull": 0.10, "very_bear": 0.45, "very_bull": 0.05},
+      "default_loss_ratio": 0.25,
+      "mitigation": "建立数据安全合规审计机制，提前完成等保测评和客户安全评审。"
+    },
+    {
+      "risk_name": "knowledge_base_decay",
+      "category": "organizational",
+      "default_probability": {"base": 0.30, "bear": 0.45, "bull": 0.15, "very_bear": 0.55, "very_bull": 0.10},
+      "default_loss_ratio": 0.15,
+      "mitigation": "落地场景文档双周更新机制，与业务专家结对负责。"
+    },
+    {
+      "risk_name": "token_cost_inflation",
+      "category": "financial",
+      "default_probability": {"base": 0.25, "bear": 0.40, "bull": 0.10, "very_bear": 0.55, "very_bull": 0.05},
+      "default_loss_ratio": 0.20,
+      "mitigation": "建立模型路由、缓存、自托管混合策略。"
+    },
+    {
+      "risk_name": "key_personnel_loss",
+      "category": "organizational",
+      "default_probability": {"base": 0.20, "bear": 0.35, "bull": 0.10, "very_bear": 0.40, "very_bull": 0.05},
+      "default_loss_ratio": 0.15,
+      "mitigation": "核心交付与算法岗位至少 2 人冗余 + 客户文档化交付。"
+    },
+    {
+      "risk_name": "client_budget_cut",
+      "category": "financial",
+      "default_probability": {"base": 0.20, "bear": 0.40, "bull": 0.05, "very_bear": 0.55, "very_bull": 0.02},
+      "default_loss_ratio": 0.25,
+      "mitigation": "签订多年订阅合同与最小用量保底条款。"
+    }
+  ]
+}

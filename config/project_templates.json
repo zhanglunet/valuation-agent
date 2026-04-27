@@ -1,0 +1,39 @@
+{
+  "ai_agent_project": {
+    "description": "AI Agent / Harness type strategic project. Five years.",
+    "default_years": 5,
+    "revenue_lines": [
+      {"name": "subscription_fee", "category": "subscription", "default_gross_margin": 0.55},
+      {"name": "implementation_fee", "category": "service", "default_gross_margin": 0.30},
+      {"name": "success_fee", "category": "outcome", "default_gross_margin": 0.65},
+      {"name": "maintenance_fee", "category": "subscription", "default_gross_margin": 0.50}
+    ],
+    "cost_lines": [
+      {"name": "staff_cost", "category": "opex"},
+      {"name": "model_api_cost", "category": "token_cost"},
+      {"name": "cloud_infra_cost", "category": "cloud"},
+      {"name": "delivery_cost", "category": "service"}
+    ],
+    "capex_lines": [
+      {"name": "platform_buildout", "category": "capex"}
+    ],
+    "default_tax_rate": 0.25,
+    "default_discount_rate": 0.15,
+    "default_terminal_growth_rate": 0.02
+  },
+  "strategic_partnership": {
+    "description": "Multi-party strategic partnership with revenue split.",
+    "default_years": 5,
+    "revenue_lines": [
+      {"name": "shared_revenue", "category": "primary", "default_gross_margin": 0.45},
+      {"name": "service_fee", "category": "service", "default_gross_margin": 0.35}
+    ],
+    "cost_lines": [
+      {"name": "staff_cost", "category": "opex"},
+      {"name": "delivery_cost", "category": "service"}
+    ],
+    "capex_lines": [],
+    "default_tax_rate": 0.25,
+    "default_discount_rate": 0.12
+  }
+}

@@ -9,7 +9,7 @@
 ## 主要功能
 
 - 支持公司名称、简称、ticker 输入。
-- 支持中文别名解析，例如“腾讯”“苹果”“贵州茅台”。
+- 支持中文别名解析（覆盖港股、美股、A 股代表性上市公司）。
 - 自动获取公开行情、股价、市值、股本。
 - 自动获取公开财务摘要，包括收入、净利润和平均股数等。
 - 支持用户手工输入数据覆盖公开数据。
@@ -36,17 +36,17 @@
 ## 使用示例
 
 ```bash
-python3 -m valuation_agent.cli generate-report --query 腾讯
+python3 -m valuation_agent.cli generate-report --query <company>
 ```
 
 ```bash
-python3 skills/research-report-skill/research_report_skill.py '{"company_name":"腾讯"}'
+python3 skills/research-report-skill/research_report_skill.py '{"company_name":"<company>"}'
 ```
 
 飞书 / Hermes：
 
 ```text
-@Hermes 请用 valuation-agent 分析腾讯控股
+@Hermes 请用 valuation-agent 分析<某上市公司>
 ```
 
 ## 测试

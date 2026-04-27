@@ -65,9 +65,9 @@
 
 验收：
 
-- `腾讯` -> `0700.HK`
-- `Apple` -> `AAPL`
-- `阿里巴巴` -> 优先 `9988.HK` 或按配置返回。
+- 中文别名 → 港股或 A 股 ticker。
+- 英文短名 → 美股 ticker。
+- 多上市公司（同一实体在不同市场）→ 按配置返回首选 ticker，并保留候选。
 - 未识别名称不编造，返回清晰错误。
 
 ### 4.2 数据缓存与来源追踪
@@ -130,7 +130,7 @@ data/raw/
 
 验收：
 
-- 对 Apple、腾讯至少能输出收入和利润多期数据。
+- 对至少 2 家代表性上市公司（覆盖港股和美股）能输出收入和利润多期数据。
 - 数据缺失时输出缺失项，而不是空表。
 
 ### 4.4 业务分部初版
@@ -152,12 +152,10 @@ data/raw/
 2. 新增 `business-segment-skill`。
 3. 新增 `valuation_agent/business_segments.py`。
 4. 对重点公司先维护分部：
-   - 腾讯。
-   - 阿里巴巴。
-   - Apple。
-   - Microsoft。
-   - Nvidia。
-   - 贵州茅台。
+   - 港股互联网平台 1-2 家。
+   - 美股大型科技 1-2 家。
+   - 美股 AI 芯片 1 家。
+   - A 股消费龙头 1 家。
 5. 报告中输出：
    - 业务分部。
    - 每个分部的角色。
@@ -166,8 +164,8 @@ data/raw/
 
 验收：
 
-- `腾讯 --depth deep` 报告不再只有分部缺失提示，而是列出主要业务板块。
-- 每个板块有“作用”和“待验证指标”。
+- 已维护分部的公司在 `--depth deep` 报告中不再只有分部缺失提示，而是列出主要业务板块。
+- 每个板块有"作用"和"待验证指标"。
 
 ### 4.5 可比公司分析正式化
 
@@ -189,8 +187,8 @@ data/raw/
 
 ```json
 {
-  "ticker": "9988.HK",
-  "reason": "同为中国互联网平台公司，具备平台生态和云业务可比性",
+  "ticker": "<TICKER>",
+  "reason": "<可比原因，如同为某行业平台公司，具备生态和业务可比性>",
   "strength": "strong"
 }
 ```
@@ -205,7 +203,7 @@ data/raw/
 
 验收：
 
-- 腾讯、Apple、贵州茅台至少各有一个可用同行池。
+- 至少覆盖 3 个行业（互联网平台、大型科技、消费龙头），每个行业至少一个可用同行池。
 - 同行表不能只有 ticker，要有可比原因。
 - 极端 PE 或负利润公司要标记，而不是直接污染中位数。
 
@@ -322,12 +320,12 @@ data/raw/
 任务：
 
 - 完整回归测试。
-- 用 5 家公司验收：
-  - 腾讯。
-  - Apple。
-  - Nvidia。
-  - 贵州茅台。
-  - 比亚迪。
+- 用至少 5 家代表性上市公司验收，覆盖以下行业各 1 家：
+  - 港股互联网平台。
+  - 美股大型科技。
+  - 美股 AI 芯片。
+  - A 股消费龙头。
+  - A 股新能源车。
 - 修正文档。
 - 发布 `v2.0.0`。
 
@@ -338,9 +336,9 @@ data/raw/
 以下命令必须可用：
 
 ```bash
-python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep
-python3 -m valuation_agent.cli generate-report --query Apple --depth deep
-python3 -m valuation_agent.cli generate-report --query 贵州茅台 --depth deep
+python3 -m valuation_agent.cli generate-report --query <company-cn> --depth deep
+python3 -m valuation_agent.cli generate-report --query <company-us> --depth deep
+python3 -m valuation_agent.cli generate-report --query <company-a-share> --depth deep
 ```
 
 报告必须包含：

@@ -1,0 +1,12 @@
+{
+  "gateway_control": 0.15,
+  "data_security": 0.15,
+  "agent_lifecycle": 0.15,
+  "industry_knowhow": 0.10,
+  "channel_access": 0.10,
+  "technology": 0.08,
+  "system_integration": 0.08,
+  "retention": 0.07,
+  "resource_mobilization": 0.06,
+  "repeatable_methodology": 0.06
+}

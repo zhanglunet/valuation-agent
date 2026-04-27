@@ -7,13 +7,13 @@
 核心变化是新增：
 
 ```bash
-python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep
+python3 -m valuation_agent.cli generate-report --query <company> --depth deep
 ```
 
 以及 Hermes Skill 调用：
 
 ```bash
-python3 skills/research-report-skill/research_report_skill.py '{"company_name":"腾讯","depth":"deep"}'
+python3 skills/research-report-skill/research_report_skill.py '{"company_name":"<company>","depth":"deep"}'
 ```
 
 ## 新增功能
@@ -40,7 +40,7 @@ python3 skills/research-report-skill/research_report_skill.py '{"company_name":"
 ## 示例
 
 ```bash
-python3 -m valuation_agent.cli generate-report --query 腾讯 --depth deep
+python3 -m valuation_agent.cli generate-report --query <company> --depth deep
 ```
 
 输出：
